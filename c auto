@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+
+enum class Player { None, Player1, Player2 };
+
+const int BOARD_SIZE = 3;
+
+// Function to print the tic-tac-toe board
+void printBoard(const std::vector<std::vector<Player>>& board) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            char symbol;
+            switch (board[i][j]) {
+                case Player::Player1:
+                    symbol = 'X';
+                    break;
+                case Player::Player2:
+                    symbol = 'O';
+                    break;
+                default:
+                    symbol = ' ';
+                    break;
+            }
+            std::cout << symbol;
+            if (j != BOARD_SIZE - 1)
+                std::cout << '|';
+        }
+        std::cout << std::endl;
+        if (i != BOARD_SIZE - 1)
+            std::cout << "-----" << std::endl;
+    }
+}
+
+// Function to check if a player has won
+bool hasWon(const std::vector<std::vector<Player>>& board, Player player) {
+    // Check rows and columns
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        if (board[i][0] == player && board[i][1] == player && board[i][2] == player)
+            return true;
+        if (board[0][i] == player && board[1][i] == player && board[2][i] == player)
+            return true;
+    }
+
+    // Check diagonals
+    if (board[0][0] == player && board[1][1] == player && board[2][2] == player)
+        return true;
+    if (board[0][2] == player && board[1][1] == player && board[2][0] == player)
+        return true;
+
+    return false;
+}
+
+// Function to check if the board is full
+bool isBoardFull(const std::vector<std::vector<Player>>& board) {
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            if (board[i][j] == Player::None)
+                return false;
+        }
+    }
+    return true;
+}
+
+// Function to get available moves
+std::vector<std::pair<int, int>> getAvailableMoves(const std::vector<std::vector<Player>>& board) {
+    std::vector<std::pair<int, int>> availableMoves;
+    for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int j = 0; j < BOARD_SIZE; ++j) {
+            if (board[i][j] == Player::None)
+                availableMoves.emplace_back(i, j);
+        }
+    }
+    return availableMoves;
+}
+
+// Function to evaluate the board for the Minimax algorithm
+int evaluateBoard(const std::vector<std::vector<Player>>& board) {
+    if (hasWon(board, Player::Player1))
+        return 1;
+    if (hasWon(board, Player::Player2))
+        return -1;
+    return 0;  // Draw
+}
+
+// Minimax algorithm function
+int minimax(std::vector<std::vector<Player>>& board, Player currentPlayer) {
+    if (hasWon(board, Player::Player1))
+        return 1;
+    if (hasWon(board, Player::
